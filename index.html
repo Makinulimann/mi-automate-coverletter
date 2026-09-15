@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cover Letter Generator — Buat Surat Lamaran Otomatis</title>
+  <meta name="description" content="Sistem pembuat surat lamaran kerja otomatis. Upload screenshot lowongan & CV, dapatkan surat lamaran profesional dalam hitungan menit." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📄</text></svg>" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-content">
+        <div class="logo">
+          <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10 9 9 9 8 9"/>
+          </svg>
+          <span class="logo-text">CoverCraft</span>
+        </div>
+
+        <div class="header-actions">
+          <div class="ai-status-badge active" id="aiStatusBadge">
+            <span class="status-dot"></span>
+            <span>Powered by Gemini AI</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-steps">
+          <div class="step-item active" data-step="1">
+            <div class="step-circle">1</div>
+            <span class="step-label">Upload</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item" data-step="2">
+            <div class="step-circle">2</div>
+            <span class="step-label">Review</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item" data-step="3">
+            <div class="step-circle">3</div>
+            <span class="step-label">Customize</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item" data-step="4">
+            <div class="step-circle">4</div>
+            <span class="step-label">Preview</span>
+          </div>
+          <div class="step-connector"></div>
+          <div class="step-item" data-step="5">
+            <div class="step-circle">5</div>
+            <span class="step-label">Download</span>
+          </div>
+        </div>
+        <div class="progress-line">
+          <div class="progress-line-fill" id="progressFill"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Step 1: Upload -->
+      <section class="step-panel active" id="step1">
+        <div class="step-header">
+          <h1>Upload Dokumen</h1>
+          <p>Upload screenshot lowongan pekerjaan dan CV Anda untuk mulai membuat surat lamaran.</p>
+        </div>
+
+        <div class="upload-grid">
+          <!-- Job Posting Upload -->
+          <div class="upload-card" id="jobUploadCard">
+            <div class="upload-zone" id="jobUploadZone">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                  <circle cx="8.5" cy="8.5" r="1.5"/>
+                  <polyline points="21 15 16 10 5 21"/>
+                </svg>
+              </div>
+              <h3>Screenshot Lowongan</h3>
+              <p>Drag & drop atau klik untuk upload</p>
+              <span class="upload-formats">JPG, PNG — Max 10MB</span>
+              <input type="file" id="jobFileInput" accept="image/*" hidden />
+            </div>
+            <div class="upload-preview" id="jobPreview" style="display:none;">
+              <img id="jobPreviewImg" alt="Preview lowongan" />
+              <button class="btn-remove" id="jobRemoveBtn" title="Hapus file">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- CV Upload -->
+          <div class="upload-card" id="cvUploadCard">
+            <div class="upload-zone" id="cvUploadZone">
+              <div class="upload-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+              <h3>CV / Resume</h3>
+              <p>Drag & drop atau klik untuk upload</p>
+              <span class="upload-formats">PDF, JPG, PNG — Max 10MB</span>
+              <input type="file" id="cvFileInput" accept=".pdf,image/*" hidden />
+            </div>
+            <div class="upload-preview" id="cvPreview" style="display:none;">
+              <div id="cvPreviewContent"></div>
+              <button class="btn-remove" id="cvRemoveBtn" title="Hapus file">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <div></div>
+          <button class="btn btn-primary" id="btnToStep2" disabled>
+            Proses Dokumen
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 2: Review Extracted Data -->
+      <section class="step-panel" id="step2">
+        <div class="step-header">
+          <h2>Review Data yang Diekstrak</h2>
+          <p>Periksa dan edit data berikut jika ada yang kurang tepat.</p>
+        </div>
+
+        <!-- OCR Loading -->
+        <div class="ocr-loading" id="ocrLoading" style="display:none;">
+          <div class="loading-spinner"></div>
+          <p class="loading-text">Membaca dokumen Anda...</p>
+          <p class="loading-sub" id="ocrStatus">Menginisialisasi OCR engine</p>
+        </div>
+
+        <div class="review-content" id="reviewContent" style="display:none;">
+          <!-- AI Insight Banner -->
+          <div class="ai-insight-banner" id="aiInsightBanner" style="display:none;">
+            <div class="insight-icon">✨</div>
+            <div class="insight-text">
+              <span class="insight-title">Analisis Gemini AI Match:</span>
+              <p id="aiMatchSummaryText"></p>
+            </div>
+          </div>
+
+          <div class="review-grid">
+            <!-- Job Data -->
+            <div class="review-card">
+              <div class="review-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <h3>Data Lowongan</h3>
+              </div>
+              <div class="form-group">
+                <label for="companyName">Nama Perusahaan</label>
+                <input type="text" id="companyName" placeholder="PT Contoh Perusahaan" />
+              </div>
+              <div class="form-group">
+                <label for="companyCity">Kota Perusahaan</label>
+                <input type="text" id="companyCity" placeholder="Jakarta" />
+              </div>
+              <div class="form-group">
+                <label for="jobPosition">Posisi yang Dilamar</label>
+                <input type="text" id="jobPosition" placeholder="Software Developer" />
+              </div>
+              <div class="form-group">
+                <label for="jobSource">Sumber Informasi Lowongan</label>
+                <input type="text" id="jobSource" placeholder="LinkedIn / JobStreet / dll" />
+              </div>
+              <div class="form-group">
+                <label for="jobQualifications">Kualifikasi yang Dibutuhkan</label>
+                <textarea id="jobQualifications" rows="4" placeholder="- Menguasai PHP&#10;- Pengalaman 2 tahun&#10;- Familiar dengan PostgreSQL"></textarea>
+              </div>
+            </div>
+
+            <!-- CV Data -->
+            <div class="review-card">
+              <div class="review-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <h3>Data Pribadi (dari CV)</h3>
+              </div>
+              <div class="form-group">
+                <label for="fullName">Nama Lengkap</label>
+                <input type="text" id="fullName" placeholder="Muhammad Contoh" />
+              </div>
+              <div class="form-group">
+                <label for="phone">No. Telepon</label>
+                <input type="text" id="phone" placeholder="08123456789" />
+              </div>
+              <div class="form-group">
+                <label for="senderCity">Kota Pengirim</label>
+                <input type="text" id="senderCity" placeholder="Malang" />
+              </div>
+              <div class="form-group">
+                <label for="university">Universitas</label>
+                <input type="text" id="university" placeholder="Universitas Brawijaya" />
+              </div>
+              <div class="form-group">
+                <label for="degree">Gelar / Jurusan</label>
+                <input type="text" id="degree" placeholder="S1 Sistem Informasi" />
+              </div>
+              <div class="form-group">
+                <label for="gpa">IPK</label>
+                <input type="text" id="gpa" placeholder="3.81" />
+              </div>
+              <div class="form-group">
+                <label for="experience">Pengalaman Kerja Relevan</label>
+                <textarea id="experience" rows="4" placeholder="Backend Developer di PT XYZ — membangun sistem HRIS, REST API, dll"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="skills">Skills / Keahlian</label>
+                <textarea id="skills" rows="3" placeholder="PHP, JavaScript, PostgreSQL, REST API, Git"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn btn-secondary" id="btnBackTo1">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Kembali
+          </button>
+          <button class="btn btn-primary" id="btnToStep3">
+            Lanjut Customize
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 3: Customize -->
+      <section class="step-panel" id="step3">
+        <div class="step-header">
+          <h2>Sesuaikan Surat Lamaran</h2>
+          <p>Atur opsi-opsi berikut sesuai kebutuhan Anda.</p>
+        </div>
+
+        <div class="customize-grid">
+          <!-- Language -->
+          <div class="option-card">
+            <div class="option-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <h3>Bahasa Surat</h3>
+            </div>
+            <div class="toggle-group">
+              <button class="toggle-btn active" data-lang="id" id="langId">Indonesia</button>
+              <button class="toggle-btn" data-lang="en" id="langEn">English</button>
+            </div>
+          </div>
+
+          <!-- Education -->
+          <div class="option-card">
+            <div class="option-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 6 3 6 3s6-1 6-3v-5"/></svg>
+              <h3>Informasi Pendidikan</h3>
+            </div>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="showEducation" checked />
+                <span class="checkmark"></span>
+                Tampilkan informasi pendidikan dalam surat
+              </label>
+            </div>
+          </div>
+
+          <!-- Attachments -->
+          <div class="option-card">
+            <div class="option-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.49"/></svg>
+              <h3>Lampiran</h3>
+            </div>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="checkbox" id="showAttachments" checked />
+                <span class="checkmark"></span>
+                Sertakan daftar lampiran
+              </label>
+            </div>
+            <div class="attachments-list" id="attachmentsList">
+              <div class="attachment-item">
+                <input type="text" value="Daftar Riwayat Hidup (CV)" class="attachment-input" />
+                <button class="btn-icon btn-remove-attachment" title="Hapus">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+              <div class="attachment-item">
+                <input type="text" value="Ijazah Terakhir" class="attachment-input" />
+                <button class="btn-icon btn-remove-attachment" title="Hapus">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+              <div class="attachment-item">
+                <input type="text" value="Transkrip Nilai" class="attachment-input" />
+                <button class="btn-icon btn-remove-attachment" title="Hapus">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+              <div class="attachment-item">
+                <input type="text" value="Portofolio Proyek" class="attachment-input" />
+                <button class="btn-icon btn-remove-attachment" title="Hapus">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+              <button class="btn btn-sm btn-outline" id="addAttachment">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Tambah Lampiran
+              </button>
+            </div>
+          </div>
+
+          <!-- Date & City -->
+          <div class="option-card">
+            <div class="option-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <h3>Tanggal Surat</h3>
+            </div>
+            <div class="form-group">
+              <input type="date" id="letterDate" />
+            </div>
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn btn-secondary" id="btnBackTo2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Kembali
+          </button>
+          <button class="btn btn-primary" id="btnToStep4">
+            Lihat Preview
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 4: Preview & Edit -->
+      <section class="step-panel" id="step4">
+        <div class="step-header">
+          <h2>Preview Surat Lamaran</h2>
+          <p>Periksa dan edit surat lamaran Anda sebelum mengunduh.</p>
+        </div>
+
+        <div class="preview-container">
+          <div class="preview-toolbar">
+            <button class="btn btn-sm btn-outline" id="btnEditMode">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Edit Surat
+            </button>
+          </div>
+          <div class="document-paper" id="documentPreview">
+            <!-- Letter content rendered here -->
+          </div>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn btn-secondary" id="btnBackTo3">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Kembali
+          </button>
+          <button class="btn btn-primary" id="btnToStep5">
+            Lanjut Download
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 5: Download -->
+      <section class="step-panel" id="step5">
+        <div class="step-header">
+          <h2>Download Surat Lamaran</h2>
+          <p>Surat lamaran Anda siap! Pilih format yang diinginkan.</p>
+        </div>
+
+        <div class="download-grid">
+          <div class="download-card" id="downloadDocx">
+            <div class="download-icon docx">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <text x="12" y="17" text-anchor="middle" font-size="6" fill="currentColor" stroke="none" font-weight="700">W</text>
+              </svg>
+            </div>
+            <h3>Microsoft Word</h3>
+            <p>Format .docx — Dapat diedit di Word</p>
+            <button class="btn btn-primary btn-download" id="btnDownloadDocx">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download DOCX
+            </button>
+          </div>
+
+          <div class="download-card" id="downloadPdf">
+            <div class="download-icon pdf">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <text x="12" y="17" text-anchor="middle" font-size="5.5" fill="currentColor" stroke="none" font-weight="700">PDF</text>
+              </svg>
+            </div>
+            <h3>PDF Document</h3>
+            <p>Format .pdf — Siap kirim / cetak</p>
+            <button class="btn btn-primary btn-download" id="btnDownloadPdf">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="download-success" id="downloadSuccess" style="display:none;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+          <h3>Berhasil diunduh!</h3>
+          <p>Surat lamaran Anda telah berhasil disimpan.</p>
+        </div>
+
+        <div class="step-actions">
+          <button class="btn btn-secondary" id="btnBackTo4">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+            Kembali ke Preview
+          </button>
+          <button class="btn btn-outline" id="btnStartOver">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+            Buat Surat Baru
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>CoverCraft — Cover Letter Generator</p>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
